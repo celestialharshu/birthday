@@ -1,0 +1,47 @@
+:root { --bg:#0f1020; --card:#1a1b33; --line:#2d2f55; --text:#f2f2ff; --muted:#9a9cc4; --acc:#ff5fa2; --ok:#3ddc97; }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin:0; background:var(--bg); color:var(--text); font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif; min-height:100dvh;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
+.wrap { max-width:960px; margin:0 auto; padding:16px; }
+header { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+h1 { margin:0; font-size:1.4rem; }
+button { background:var(--acc); color:#fff; border:0; padding:12px 18px; min-height:44px; border-radius:12px; font-weight:600; font-size:16px; cursor:pointer; touch-action:manipulation; }
+button.ghost { background:transparent; border:1px solid var(--line); color:var(--text); }
+button:disabled { opacity:.5; }
+button.full, .big-btn { width:100%; margin-top:10px; }
+.big-btn { min-height:52px; font-size:17px; }
+button.mini { min-height:30px; padding:4px 10px; font-size:13px; margin-left:8px; border-radius:8px; background:var(--line); }
+button.link { background:none; color:var(--muted); width:100%; margin-top:4px; text-decoration:underline; font-weight:400; }
+/* 16px font stops iOS Safari zooming into inputs */
+input, select { width:100%; padding:12px; min-height:46px; margin:6px 0 12px; background:var(--bg); color:var(--text); border:1px solid var(--line); border-radius:12px; font-size:16px; font-family:inherit; -webkit-appearance:none; appearance:none; }
+.grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:14px; margin-top:14px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:16px; cursor:pointer; }
+.card:hover { border-color:var(--acc); }
+.card p { margin:4px 0; color:var(--muted); }
+.top { color:var(--acc); font-weight:700; margin-bottom:6px; }
+.overlay { position:fixed; inset:0; background:#000a; display:flex; align-items:center; justify-content:center; padding:12px; z-index:5; }
+.modal { background:var(--card); border-radius:18px; padding:20px; width:100%; max-width:460px; max-height:90dvh; overflow:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain; }
+.row { display:flex; justify-content:space-between; align-items:center; gap:8px; padding:8px 0; border-bottom:1px solid var(--line); }
+.row small { display:block; word-break:break-all; }
+.paid { color:var(--ok); font-weight:700; } .pending { color:#ffb454; }
+.err { color:#ff6b6b; } .ok { color:var(--ok); } .muted { color:var(--muted); }
+.login { max-width:360px; margin:12vh auto; background:var(--card); padding:24px; border-radius:18px; }
+.chk { display:flex; gap:12px; align-items:center; min-height:40px; } .chk input { width:22px; height:22px; min-height:0; margin:4px 0; }
+.inline { display:flex; gap:8px; } .inline input { margin-bottom:12px; } .inline button { margin-bottom:12px; white-space:nowrap; }
+.lbl { display:block; color:var(--muted); font-size:.85rem; margin-top:4px; }
+.total { display:flex; justify-content:space-between; align-items:center; padding:12px 14px; margin:8px 0; background:var(--bg); border:1px solid var(--line); border-radius:12px; font-size:1.1rem; }
+.total b { color:var(--ok); font-size:1.3rem; }
+.apps { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:12px 0; }
+.appbtn { display:flex; align-items:center; justify-content:center; text-align:center; min-height:56px; padding:8px; border-radius:12px; color:#fff; font-weight:700; text-decoration:none; font-size:15px; }
+.qrbox { text-align:center; } .qrbox img { background:#fff; padding:8px; border-radius:12px; width:220px; max-width:100%; }
+.adminbox { margin-top:14px; padding-top:6px; border-top:1px dashed var(--line); }
+.success { text-align:center; padding:12px 0 4px; } .success .tick { font-size:64px; line-height:1; } .success .big { font-size:1.4rem; color:var(--ok); font-weight:700; margin:4px 0; }
+/* Phones: modal slides up as a bottom sheet */
+@media (max-width: 600px) {
+  .wrap { padding:12px; }
+  .overlay { align-items:flex-end; padding:0; }
+  .modal { max-width:none; border-radius:20px 20px 0 0; max-height:92dvh; padding:18px 16px calc(18px + env(safe-area-inset-bottom)); }
+  .grid { grid-template-columns:1fr; }
+  h1 { font-size:1.2rem; }
+}
