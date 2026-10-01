@@ -78,28 +78,102 @@ async function present(e, admin = false) {
 }
 
 async function issuePass(pass, ev, user, req) {
-  if (!pass.code) { pass.code = crypto.randomBytes(12).toString('hex'); await pass.save(); }
+  if (!pass.code) {
+    pass.code = crypto.randomBytes(12).toString('hex');
+    await pass.save();
+  }
+
   try {
-    const configuredUrl = String(process.env.APP_URL || '').replace(/\/$/, '');
-    const vercelUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL;
-    const forwardedProto = req?.get?.('x-forwarded-proto') || req?.protocol || 'https';
-    const requestUrl = req?.get?.('host') ? `${forwardedProto}://${req.get('host')}` : '';
-    const appUrl = configuredUrl || (vercelUrl ? `https://${vercelUrl}` : requestUrl);
-    if (!appUrl) throw new Error('APP_URL is not configured');
-    const png = await QRCode.toBuffer(`${appUrl}/verify/${pass.code}`, { width: 360, margin: 2 });
-    await mailer.sendMail({
-      from: `Birthday Pass <${process.env.GMAIL_USER}>`,
-      to: pass.email,
-      subject: `🎉 Your pass for ${ev.title}`,
-      html: `<div style="font-family:sans-serif;text-align:center">
-        <h2>🎉 You're in, ${user.name}!</h2>
-        <p><b>${ev.title}</b><br>${new Date(ev.date).toDateString()}</p>
-        <img src="cid:qr" width="240" alt="QR pass">
-        <p>Show this QR code at the entry. It works once.</p></div>`,
-      attachments: [{ filename: 'pass.png', content: png, cid: 'qr' }],
+    const configuredUrl = String(
+      process.env.APP_URL || ''
+    ).replace(/\/$/, '');
+
+    const vercelUrl =
+      process.env.VERCEL_PROJECT_PRODUCTION_URL ||
+      process.env.VERCEL_URL;
+
+    const forwardedProto =
+      req?.get?.('x-forwarded-proto') ||
+      req?.protocol ||
+      'https';
+
+    const requestUrl = req?.get?.('host')
+      ? `${forwardedProto}://${req.get('host')}`
+      : '';
+
+    const appUrl =
+      configuredUrl ||
+      (vercelUrl ? `https://${vercelUrl}` : requestUrl);
+
+    if (!appUrl) {
+      throw new Error('APP_URL is not configured');
+    }
+
+    const verifyUrl = `${appUrl}/verify/${pass.code}`;
+
+    const png = await QRCode.toBuffer(verifyUrl, {
+      width: 360,
+      margin: 2,
     });
+
+    const eventDate = new Date(ev.date).toDateString();
+
+    const mailOptions = {
+      from: process.env.GMAIL_USER,
+      to: pass.email,
+      replyTo: process.env.GMAIL_USER,
+
+      subject: `Birthday Pass - ${ev.title}`,
+
+      text: `Hello ${user.name},
+
+Your payment has been confirmed.
+
+Your birthday pass for ${ev.title} is attached to this email.
+
+Event: ${ev.title}
+Date: ${eventDate}
+
+Please keep the attached QR code safe and present it at the entrance.
+
+The QR code is required for entry and can be used only once.
+
+Regards,
+Birthday Pass`,
+
+      attachments: [
+        {
+          filename: 'birthday-pass-qr.png',
+          content: png,
+          contentType: 'image/png',
+          disposition: 'attachment',
+        },
+      ],
+    };
+
+    await new Promise((resolve, reject) => {
+      mailer.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(info);
+        }
+      });
+    });
+
+    console.log(
+      `Pass email sent successfully to ${pass.email}`
+    );
+
     return true;
-  } catch (e) { console.error('mail failed', e.message); return false; }
+  } catch (e) {
+    console.error(
+      'mail failed:',
+      e?.message || e
+    );
+
+    return false;
+  }
 }
 
 app.post('/api/login', async (req, res) => {
