@@ -30,7 +30,7 @@ const DONE = ['paid', 'free'];
 // Coupons: 100 = no fees
 const COUPONS = {
   BIRTHDAYBOY: { percent: 100, label: 'Birthday boy: no fees 🎂' },
-  SPECIALMEMBER: { percent: 100, label: 'Special member: no fees ⭐' },
+  SPECIALMEMBER: { price: 170, label: 'Special member price: ₹170 ⭐' },
 };
 // Works out what a user must pay for an event
 function priceFor(ev, userId, codeRaw) {
@@ -39,7 +39,10 @@ function priceFor(ev, userId, codeRaw) {
   if (!code) return { amount: ev.amount, coupon: '', label: '' };
   const c = COUPONS[code];
   if (!c) return { error: 'Invalid coupon code' };
-  return { amount: Math.max(0, Math.round(ev.amount * (100 - c.percent) / 100)), coupon: code, label: c.label };
+  const amount = c.price !== undefined
+    ? Math.min(c.price, ev.amount)                       // fixed price, never higher than the event amount
+    : Math.max(0, Math.round(ev.amount * (100 - c.percent) / 100));
+  return { amount, coupon: code, label: c.label };
 }
 const isEmail = (s) => /^\S+@\S+\.\S+$/.test(s);
 const same = (a, b) => String(a) === String(b);
