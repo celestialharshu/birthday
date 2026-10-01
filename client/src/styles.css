@@ -46,3 +46,6 @@ input, select { width:100%; padding:12px; min-height:46px; margin:6px 0 12px; ba
   .grid { grid-template-columns:1fr; }
   h1 { font-size:1.2rem; }
 }
+.loader-wrap { display:flex; flex-direction:column; align-items:center; gap:12px; padding:48px 0; }
+.spinner { width:38px; height:38px; border:4px solid var(--line); border-top-color:var(--acc); border-radius:50%; animation:spin .8s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }

@@ -56,20 +56,30 @@ function Login({ onLogin }) {
     </form>
   );
 }
+function Loader() {
+  return (
+    <div className="loader-wrap">
+      <div className="spinner" />
+      <p className="muted">Loading events…</p>
+    </div>
+  );
+}
 
 function Dashboard({ user }) {
   const [events, setEvents] = useState([]);
   const [open, setOpen] = useState(null);
   const [creating, setCreating] = useState(false);
   const [err, setErr] = useState('');
-  const load = () => api('/events').then(setEvents).catch((e) => setErr(e.message));
+  const [loading, setLoading] = useState(true);
+  const load = () => api('/events').then(setEvents).catch((e) => setErr(e.message)).finally(() => setLoading(false));
   useEffect(() => { load(); const p = getPending(); if (p) setOpen(p.eventId); }, []);
   const current = events.find((e) => e.id === open);
   return (
     <>
       {user.role === 'admin' && <button onClick={() => setCreating(true)}>+ Create event</button>}
       {err && <p className="err">{err}</p>}
-      {!events.length && !err && <p className="muted">No events yet.</p>}
+      {loading && <Loader />}
+      {!loading && !events.length && !err && <p className="muted">No events yet.</p>}
       <div className="grid">
         {events.map((e) => (
           <div key={e.id} className="card" onClick={() => setOpen(e.id)}>
