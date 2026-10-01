@@ -21,7 +21,7 @@ export default function App() {
   return (
     <div className="wrap">
       <header>
-        <h1>🎂 Birthday Pass</h1>
+        <h1>Event Pass</h1>
         <div>
           {user.name}{user.role === 'admin' && ' (admin)'}{' '}
           <button className="ghost" onClick={() => { localStorage.clear(); location.href = '/'; }}>Logout</button>
