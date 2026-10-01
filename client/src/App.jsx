@@ -83,7 +83,7 @@ function Dashboard({ user }) {
       <div className="grid">
         {events.map((e) => (
           <div key={e.id} className="card" onClick={() => setOpen(e.id)}>
-            <div className="top">🎉 {e.birthdayName}'s Birthday</div>
+            <div className="top"> {e.birthdayName}'s Birthday</div>
             <h3 style={{ margin: '4px 0' }}>{e.title}</h3>
             <p>{fmt(e.date)}</p>
             <p>{e.invitedCount} members invited</p>
@@ -200,7 +200,7 @@ function EventModal({ ev, user, onClose, onChange }) {
   return (
     <div className="overlay" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
-        <div className="top">🎉 {ev.birthdayName}'s Birthday</div>
+        <div className="top"> {ev.birthdayName}'s Birthday</div>
         <h2 style={{ margin: '4px 0' }}>{ev.title}</h2>
         <p className="muted">{fmt(ev.date)} · {ev.invitedCount} invited · ₹{ev.amount} each</p>
 
@@ -346,7 +346,7 @@ function Verify({ code }) {
       <h2>Pass check</h2>
       {err && <p className="err">❌ {err}</p>}
       {info && <>
-        <p>👤 {info.name}</p><p>🎉 {info.event}</p><p>{info.type === 'free' ? 'Birthday free pass' : 'Paid pass'}</p>
+        <p>👤 {info.name}</p><p> {info.event}</p><p>{info.type === 'free' ? 'Birthday free pass' : 'Paid pass'}</p>
         {info.used || done ? <p className="err">Already checked in</p> : <button onClick={checkin}>✅ Let in</button>}
       </>}
     </div>
